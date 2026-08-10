@@ -5,7 +5,7 @@
 ## 在线地址
 
 - 博客：<https://jay-qiao.github.io/Teezeek_blog/>
-- 后台演示：<https://jay-qiao.github.io/Teezeek_blog/admin/>
+ 
 
 ## 功能亮点
 
