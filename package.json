@@ -1,0 +1,27 @@
+{
+  "name": "teezeek-blog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "npm@11.6.0",
+  "scripts": {
+    "docs:dev": "vitepress dev site --host 127.0.0.1",
+    "docs:build": "node scripts/gen-site-assets.mjs && vitepress build site",
+    "docs:preview": "vitepress preview site --host 127.0.0.1",
+    "gen:assets": "node scripts/gen-site-assets.mjs"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "lucide-vue-next": "^0.468.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@fontsource/jetbrains-mono": "^5.1.1",
+    "@fontsource/noto-serif-sc": "^5.1.1",
+    "markdown-it": "^14.1.0",
+    "vitepress": "1.6.4"
+  }
+}
