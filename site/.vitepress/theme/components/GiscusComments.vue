@@ -1,11 +1,13 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import defaultSettings from '../../../data/settings.json'
 
 const container = ref(null)
 const config = defaultSettings.utterances || {}
 const ready = ref(Boolean(config.repo))
 const state = ref('loading')
+let loaded = false
+let timer = 0
 
 onMounted(() => {
   if (!ready.value) return
@@ -19,6 +21,7 @@ onMounted(() => {
   script.setAttribute('data-lang', config.lang || 'zh-CN')
   script.setAttribute('crossorigin', 'anonymous')
   script.addEventListener('load', () => {
+    loaded = true
     window.setTimeout(() => {
       if (container.value && container.value.querySelector('iframe')) {
         state.value = 'ready'
@@ -32,6 +35,15 @@ onMounted(() => {
     container.value.innerHTML = ''
     container.value.appendChild(script)
   }
+  timer = window.setTimeout(() => {
+    if (!loaded && container.value) {
+      state.value = 'error'
+    }
+  }, 12000)
+})
+
+onBeforeUnmount(() => {
+  window.clearTimeout(timer)
 })
 </script>
 
@@ -44,7 +56,7 @@ onMounted(() => {
       评论区尚未配置。请在后台的评论设置中填写 Utterances 参数。
     </div>
     <div v-if="state === 'error'" class="giscus-placeholder">
-      评论区加载失败，请刷新页面重试；若仍失败，可到仓库 Issues 中留言。
+      评论区组件加载失败，可能是网络无法访问评论服务。你可以到仓库 <a :href="'https://github.com/' + (config.repo || 'jay-qiao/Teezeek_blog') + '/issues'" target="_blank" rel="noopener">Issues</a> 中留言。
     </div>
   </section>
 </template>
