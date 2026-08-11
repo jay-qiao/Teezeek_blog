@@ -7,6 +7,7 @@ import {
   BookOpen,
   Database,
   Image,
+  KeyRound,
   Menu,
   MessageSquare,
   Palette,
@@ -26,6 +27,7 @@ defineProps({
 const open = ref(false)
 
 const links = [
+  { key: 'access', label: '内测访问码', link: '/admin/access', icon: KeyRound },
   { key: 'dashboard', label: '仪表盘', link: '/admin', icon: BarChart3 },
   { key: 'posts', label: '文章管理', link: '/admin/posts', icon: BookOpen },
   { key: 'taxonomy', label: '分类标签', link: '/admin/taxonomy', icon: Tags },

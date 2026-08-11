@@ -9,6 +9,8 @@ import '@fontsource/jetbrains-mono/600.css'
 
 import DefaultTheme from 'vitepress/theme'
 import Layout from './Layout.vue'
+import AccessGate from './components/AccessGate.vue'
+import AdminAccess from './components/AdminAccess.vue'
 import AdminBackup from './components/AdminBackup.vue'
 import AdminComments from './components/AdminComments.vue'
 import AdminDashboard from './components/AdminDashboard.vue'
@@ -57,6 +59,7 @@ export default {
     }
 
     app.component('AdminBackup', AdminBackup)
+    app.component('AdminAccess', AdminAccess)
     app.component('AdminComments', AdminComments)
     app.component('AdminDashboard', AdminDashboard)
     app.component('AdminImages', AdminImages)
@@ -70,6 +73,7 @@ export default {
     app.component('AdminAppearance', AdminAppearance)
     app.component('AdminLeaderboard', AdminLeaderboard)
     app.component('AboutPage', AboutPage)
+    app.component('AccessGate', AccessGate)
     app.component('AshParticles', AshParticles)
     app.component('LeaderboardIndex', LeaderboardIndex)
     app.component('MouseGlow', MouseGlow)

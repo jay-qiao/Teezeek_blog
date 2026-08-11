@@ -33,6 +33,7 @@ function goBack() {
 
 <template>
   <div class="r-site-shell">
+    <AccessGate />
     <AshParticles :count="26" />
     <RuneRain :density="0.85" />
     <MouseGlow />
