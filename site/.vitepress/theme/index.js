@@ -12,6 +12,7 @@ import Layout from './Layout.vue'
 import AdminBackup from './components/AdminBackup.vue'
 import AdminComments from './components/AdminComments.vue'
 import AdminDashboard from './components/AdminDashboard.vue'
+import AdminImages from './components/AdminImages.vue'
 import AdminModal from './components/AdminModal.vue'
 import AdminPosts from './components/AdminPosts.vue'
 import AdminSettings from './components/AdminSettings.vue'
@@ -58,6 +59,7 @@ export default {
     app.component('AdminBackup', AdminBackup)
     app.component('AdminComments', AdminComments)
     app.component('AdminDashboard', AdminDashboard)
+    app.component('AdminImages', AdminImages)
     app.component('AdminModal', AdminModal)
     app.component('AdminPosts', AdminPosts)
     app.component('AdminSettings', AdminSettings)
