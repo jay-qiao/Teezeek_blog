@@ -19,6 +19,7 @@ import AdminShell from './components/AdminShell.vue'
 import AdminTaxonomy from './components/AdminTaxonomy.vue'
 import AdminUsers from './components/AdminUsers.vue'
 import AdminAppearance from './components/AdminAppearance.vue'
+import AdminLeaderboard from './components/AdminLeaderboard.vue'
 import AboutPage from './components/AboutPage.vue'
 import AshParticles from './components/AshParticles.vue'
 import LeaderboardIndex from './components/LeaderboardIndex.vue'
@@ -62,6 +63,7 @@ export default {
     app.component('AdminTaxonomy', AdminTaxonomy)
     app.component('AdminUsers', AdminUsers)
     app.component('AdminAppearance', AdminAppearance)
+    app.component('AdminLeaderboard', AdminLeaderboard)
     app.component('AboutPage', AboutPage)
     app.component('AshParticles', AshParticles)
     app.component('LeaderboardIndex', LeaderboardIndex)

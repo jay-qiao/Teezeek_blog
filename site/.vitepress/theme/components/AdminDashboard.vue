@@ -41,7 +41,8 @@ async function load() {
 
 const quickLinks = [
   { label: '文章管理', link: '/admin/posts' },
-  { label: 'Giscus 评论', link: '/admin/comments' },
+  { label: '评论配置', link: '/admin/comments' },
+  { label: '屠龙榜管理', link: '/admin/leaderboard' },
   { label: '外观设置', link: '/admin/appearance' },
   { label: '数据备份', link: '/admin/backup' }
 ]

@@ -11,6 +11,7 @@ import {
   Palette,
   Settings,
   Tags,
+  Trophy,
   Users,
   X
 } from 'lucide-vue-next'
@@ -27,6 +28,7 @@ const links = [
   { key: 'posts', label: '文章管理', link: '/admin/posts', icon: BookOpen },
   { key: 'taxonomy', label: '分类标签', link: '/admin/taxonomy', icon: Tags },
   { key: 'comments', label: '评论配置', link: '/admin/comments', icon: MessageSquare },
+  { key: 'leaderboard', label: '屠龙榜管理', link: '/admin/leaderboard', icon: Trophy },
   { key: 'users', label: '协作者管理', link: '/admin/users', icon: Users },
   { key: 'settings', label: '系统设置', link: '/admin/settings', icon: Settings },
   { key: 'appearance', label: '外观设置', link: '/admin/appearance', icon: Palette },

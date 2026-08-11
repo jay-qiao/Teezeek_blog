@@ -1,14 +1,19 @@
 <script setup>
 import { Crown, Flame, Medal, Star, Trophy } from 'lucide-vue-next'
+import leaderboardData from '../../../data/leaderboard.json'
 
-const heroes = [
-  { rank: 1, name: 'Teezeek', title: '图书馆馆长', points: 1280, posts: 12, badge: '龙之书页', tier: '冠军', icon: Crown },
-  { rank: 2, name: '旅鸽', title: '站台管理员', points: 860, posts: 8, badge: '银羽信使', tier: '亚军', icon: Medal },
-  { rank: 3, name: '灰烬', title: '炼金学徒', points: 540, posts: 5, badge: '火漆学徒', tier: '季军', icon: Star },
-  { rank: 4, name: '北境旅人', title: '藏书客', points: 320, posts: 3, badge: '夜航者', tier: '荣誉骑士', icon: Flame },
-  { rank: 5, name: '未具名巫师', title: '匿名访客', points: 120, posts: 1, badge: '迷雾旅人', tier: '迷雾行者', icon: Trophy }
-]
+const iconMap = {
+  crown: Crown,
+  medal: Medal,
+  star: Star,
+  flame: Flame,
+  trophy: Trophy
+}
 
+const heroes = (leaderboardData.heroes || [])
+  .slice()
+  .sort((a, b) => Number(a.rank) - Number(b.rank))
+  .map((hero) => ({ ...hero, icon: iconMap[hero.icon] || Trophy }))
 const maxPoints = Math.max(...heroes.map((hero) => hero.points))
 </script>
 
