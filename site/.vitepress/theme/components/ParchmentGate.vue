@@ -135,6 +135,10 @@ onBeforeUnmount(() => {
             <span>T</span>
           </span>
           <span class="envelope-ribbon" />
+          <button class="envelope-open-btn" type="button" @click="openLetter">
+            开启信函
+            <ArrowRight :size="16" />
+          </button>
         </div>
 
         <div class="letter-sheet" :class="{ 'is-unfolding': opening }">
@@ -153,10 +157,7 @@ onBeforeUnmount(() => {
             <strong>Teezeek</strong>
           </div>
           <div class="letter-actions">
-            <button class="btn btn-gold" type="button" @click="openLetter">
-              开启信函
-              <ArrowRight :size="16" />
-            </button>
+            <button class="btn btn-gold" type="button" @click="openLetter">进入大厅</button>
             <button class="btn btn-ghost" type="button" @click="skipLetter">跳过，直达大厅</button>
           </div>
         </div>
