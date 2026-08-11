@@ -25,6 +25,7 @@ const DEFAULT_MAP = defaultAppearance.map
 
 const stage = ref('loading')
 const opening = ref(false)
+const opened = ref(false)
 const sealBreaking = ref(false)
 const progress = ref(0)
 const letter = ref({ ...DEFAULT_LETTER })
@@ -44,6 +45,7 @@ const departments = [
 function openLetter() {
   if (opening.value) return
   opening.value = true
+  opened.value = true
   sealBreaking.value = true
   sessionStorage.setItem(STORAGE_KEY, '1')
   clearTimeout(loadTimer)
@@ -63,7 +65,7 @@ function openLetter() {
       cancelAnimationFrame(progressRaf)
       progress.value = 0
     }, LOADING_DURATION)
-  }, 520)
+  }, 1500)
 }
 
 function skipLetter() {
@@ -78,6 +80,7 @@ function rereadLetter() {
   progress.value = 0
   sessionStorage.removeItem(STORAGE_KEY)
   opening.value = false
+  opened.value = false
   sealBreaking.value = false
   stage.value = 'letter'
 }
@@ -123,18 +126,35 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section v-else-if="stage === 'letter'" key="letter" class="gate-letter" :class="{ 'is-opening': opening }">
-        <div class="letter-sheet" :class="{ 'is-unfolding': opening }">
-          <div class="letter-runes" aria-hidden="true">ᚱ ᚨ ᚷ ᚾ ᚨ ᚱ</div>
-          <div class="wax-seal" :class="{ 'is-breaking': sealBreaking }" aria-hidden="true">
+      <section v-else-if="stage === 'letter'" key="letter" class="gate-letter" :class="{ 'is-opening': opening, 'is-opened': opened }">
+        <div class="envelope" :class="{ 'is-open': opened, 'is-breaking': sealBreaking }" aria-hidden="true">
+          <span class="envelope-back" />
+          <span class="envelope-pocket" />
+          <span class="envelope-flap" />
+          <span class="wax-seal" :class="{ 'is-breaking': sealBreaking }">
             <span>T</span>
-          </div>
-          <p class="letter-greeting">入学通知</p>
+          </span>
+          <span class="envelope-ribbon" />
+        </div>
+
+        <div class="letter-sheet" :class="{ 'is-unfolding': opening }">
+          <span class="letter-corner lt" aria-hidden="true" />
+          <span class="letter-corner rt" aria-hidden="true" />
+          <span class="letter-corner lb" aria-hidden="true" />
+          <span class="letter-corner rb" aria-hidden="true" />
+          <span class="letter-filigree" aria-hidden="true">✦ ❦ ✦</span>
+          <div class="letter-runes" aria-hidden="true">ᚱ ᚨ ᚷ ᚾ ᚨ ᚱ · ᛏᛖᛖᛉᛖᛖᚲ</div>
+          <p class="letter-greeting">致远方的旅人</p>
           <h1 class="letter-title">{{ letter.title }}</h1>
-          <p class="letter-body">{{ letter.body }}</p>
+          <span class="letter-divider" aria-hidden="true" />
+          <p class="letter-body">{{ letter.bodyLong || letter.body }}</p>
+          <div class="letter-sign">
+            <span>烬土图书馆 · 馆长</span>
+            <strong>Teezeek</strong>
+          </div>
           <div class="letter-actions">
             <button class="btn btn-gold" type="button" @click="openLetter">
-              确定进入
+              开启信函
               <ArrowRight :size="16" />
             </button>
             <button class="btn btn-ghost" type="button" @click="skipLetter">跳过，直达大厅</button>
