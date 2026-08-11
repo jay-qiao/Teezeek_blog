@@ -402,8 +402,8 @@ body {
 
 .envelope {
   position: relative;
-  width: min(560px, 92vw);
-  height: min(390px, 60vh);
+  width: min(680px, 92vw);
+  height: min(460px, 68vh);
   transform-style: preserve-3d;
   filter: drop-shadow(0 26px 60px rgba(0, 0, 0, 0.6));
   transition: transform 0.6s ease;
@@ -505,7 +505,7 @@ body {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(720px, 92vw);
+  width: min(780px, 92vw);
   transform: translate(-50%, -44%) translateY(56px) scale(0.96);
   opacity: 0;
   pointer-events: none;

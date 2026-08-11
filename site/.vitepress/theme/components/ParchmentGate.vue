@@ -24,7 +24,7 @@ const DEFAULT_LETTER = defaultAppearance.letter
 const DEFAULT_MAP = defaultAppearance.map
 
 const stage = ref('loading')
-const opening = ref(false)
+const leaving = ref(false)
 const opened = ref(false)
 const sealBreaking = ref(false)
 const progress = ref(0)
@@ -43,15 +43,17 @@ const departments = [
 ]
 
 function openLetter() {
-  if (opening.value) return
-  opening.value = true
+  if (leaving.value) return
   opened.value = true
   sealBreaking.value = true
   sessionStorage.setItem(STORAGE_KEY, '1')
   clearTimeout(loadTimer)
   loadTimer = window.setTimeout(() => {
+    leaving.value = true
+    clearTimeout(loadTimer)
+    loadTimer = window.setTimeout(() => {
     stage.value = 'loading'
-    opening.value = false
+    leaving.value = false
     sealBreaking.value = false
     progress.value = 0
     const startAt = performance.now()
@@ -65,6 +67,7 @@ function openLetter() {
       cancelAnimationFrame(progressRaf)
       progress.value = 0
     }, LOADING_DURATION)
+    }, 420)
   }, 1500)
 }
 
@@ -79,7 +82,7 @@ function rereadLetter() {
   cancelAnimationFrame(progressRaf)
   progress.value = 0
   sessionStorage.removeItem(STORAGE_KEY)
-  opening.value = false
+  leaving.value = false
   opened.value = false
   sealBreaking.value = false
   stage.value = 'letter'
@@ -126,7 +129,7 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section v-else-if="stage === 'letter'" key="letter" class="gate-letter" :class="{ 'is-opening': opening, 'is-opened': opened }">
+      <section v-else-if="stage === 'letter'" key="letter" class="gate-letter" :class="{ 'is-opening': leaving, 'is-opened': opened }">
         <div class="envelope" :class="{ 'is-open': opened, 'is-breaking': sealBreaking }" aria-hidden="true">
           <span class="envelope-back" />
           <span class="envelope-pocket" />
