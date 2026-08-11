@@ -70,6 +70,10 @@ scripts/              构建与辅助脚本
 - [网站风格规范](docs/04-style-guide.md)
 - [规则文件索引](rules/00-index.md)
 
+## 许可证
+
+本项目使用 [MIT License](LICENSE)，你可以自由使用、修改和分发，但需保留版权声明。
+
 ## 自动部署
 
 仓库内置 GitHub Actions 工作流。推送 `main` 分支后会自动执行 `npm run docs:build`，并把构建产物发布到 GitHub Pages。
