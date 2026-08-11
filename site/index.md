@@ -1,7 +1,6 @@
 ---
 layout: false
-title: 卡塞尔大厅
+title: 烬土大厅
 ---
 
 <ParchmentGate />
-

@@ -13,7 +13,7 @@ function formatDate(value) {
 
 <template>
   <section class="posts-index">
-    <div class="page-kicker">魔法部公告栏</div>
+    <div class="page-kicker">公告栏</div>
     <h1 class="page-title">公告</h1>
     <p class="page-lead">关于这座图书馆的消息，都会张贴在这里。</p>
 

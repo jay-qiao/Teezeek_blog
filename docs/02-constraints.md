@@ -31,7 +31,7 @@
 - 写作语言默认中文，代码与专有名词保留原文。
 - 每篇文章必须包含 title、description、date、tags。
 - 文章建议补充 category 分类字段。
-- 文件名使用短横线小写命名，例如 `hello-cassell.md`。
+- 文件名使用短横线小写命名，例如 `hello-ashlands.md`。
 - 图片优先存放于 `site/public/images/`，引用时使用绝对站点路径。
 
 ## 非目标

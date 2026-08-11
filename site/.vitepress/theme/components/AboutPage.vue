@@ -11,7 +11,7 @@ const skills = ['Vue 3', 'VitePress', 'ES Module', 'npm', 'GitHub Pages', 'Markd
         <span>T</span>
       </div>
       <div class="about-copy">
-        <p class="page-kicker">有求必应屋</p>
+        <p class="page-kicker">议事厅</p>
         <h1 class="page-title">关于 Teezeek</h1>
         <p class="page-lead">
           一个在代码与文字之间来回穿梭的旅人。这座图书馆里存放着我读过的书、写过的代码，
@@ -47,4 +47,3 @@ const skills = ['Vue 3', 'VitePress', 'ES Module', 'npm', 'GitHub Pages', 'Markd
     </div>
   </section>
 </template>
-

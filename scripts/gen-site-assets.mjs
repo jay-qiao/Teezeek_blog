@@ -5,7 +5,7 @@ const ROOT = process.cwd()
 const SITE = join(ROOT, 'site')
 const PUBLIC_DIR = join(SITE, 'public')
 const SITE_URL = (process.env.SITE_URL || 'https://jay-qiao.github.io/Teezeek_blog').replace(/\/+$/, '')
-const SITE_NAME = 'Teezeek 的卡塞尔图书馆'
+const SITE_NAME = 'Teezeek 的烬土图书馆'
 
 mkdirSync(PUBLIC_DIR, { recursive: true })
 

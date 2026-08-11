@@ -17,7 +17,7 @@ blog/
 │   │       └── components/  # 自定义组件
 │   ├── data/                # 设置、外观、分类标签 JSON
 │   ├── public/              # 静态资源与生成文件
-│   ├── index.md             # 卡塞尔大厅
+│   ├── index.md             # 烬土大厅
 │   ├── leaderboard.md       # 屠龙勇士榜
 │   ├── posts/               # 文章
 │   ├── updates/             # 公告

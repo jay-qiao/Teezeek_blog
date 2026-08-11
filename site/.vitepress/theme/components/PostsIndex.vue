@@ -39,9 +39,9 @@ function formatDate(value) {
 
 <template>
   <section class="posts-index">
-    <div class="page-kicker">九又四分之三站台</div>
+    <div class="page-kicker">文章站台</div>
     <h1 class="page-title">文章</h1>
-    <p class="page-lead">从卡塞尔出发的每一篇笔记，都通向一个站台。</p>
+    <p class="page-lead">从烬土出发的每一篇笔记，都通向一个站台。</p>
 
     <div class="tag-bar" aria-label="按分类筛选">
       <button

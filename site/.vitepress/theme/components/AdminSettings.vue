@@ -4,7 +4,7 @@ import { Check } from 'lucide-vue-next'
 import { isConnected, readTextFile, writeTextFile } from '../admin/github.js'
 
 const form = ref({
-  siteName: 'Teezeek 的卡塞尔图书馆',
+  siteName: 'Teezeek 的烬土图书馆',
   siteDescription: '记录代码与生活的暗黑奇幻个人博客。',
   registration: true,
   allowComments: true,
@@ -55,10 +55,12 @@ async function save() {
   busy.value = true
   error.value = ''
   try {
+    const existing = JSON.parse((await readTextFile('site/data/settings.json')).content)
     await writeTextFile(
       'site/data/settings.json',
       JSON.stringify(
         {
+          ...existing,
           siteName: form.value.siteName,
           siteDescription: form.value.siteDescription,
           registration: form.value.registration,

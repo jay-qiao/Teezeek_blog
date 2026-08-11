@@ -44,7 +44,7 @@ const tools = [
 
 <template>
   <section class="tools-index">
-    <div class="page-kicker">奥利凡德魔杖店</div>
+    <div class="page-kicker">工具屋</div>
     <h1 class="page-title">工具</h1>
     <p class="page-lead">每件工具都该被认真挑选，就像每一根魔杖都会选择它的主人。</p>
 
@@ -59,7 +59,7 @@ const tools = [
         >
           <span class="tool-post-pin" aria-hidden="true" />
           <span class="tool-post-ribbon">悬赏令</span>
-          <span class="tool-post-stamp">奥利凡德</span>
+          <span class="tool-post-stamp">烬土工坊</span>
           <span class="tool-icon"><component :is="tool.icon" :size="22" /></span>
           <h2>{{ tool.name }}</h2>
           <p>{{ tool.desc }}</p>

@@ -5,9 +5,9 @@ import { isConnected, readTextFile, writeTextFile } from '../admin/github.js'
 
 const CONFIG_KEY = 'teezeek-letter-config'
 const form = ref({
-  letterTitle: '欢迎来到\nTeezeek 的卡塞尔图书馆',
+  letterTitle: '欢迎来到\nTeezeek 的烬土图书馆',
   letterBody: '这封信将带你穿过迷雾，抵达属于代码、文字与龙火的站台。请握住火漆封印，展开大厅地图。',
-  mapTitle: 'Teezeek 的卡塞尔图书馆',
+  mapTitle: 'Teezeek 的烬土图书馆',
   mapSubtitle: '记录代码与生活的暗黑奇幻站台'
 })
 const saved = ref(false)
