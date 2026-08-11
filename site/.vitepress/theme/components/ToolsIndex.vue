@@ -48,13 +48,24 @@ const tools = [
     <h1 class="page-title">工具</h1>
     <p class="page-lead">每件工具都该被认真挑选，就像每一根魔杖都会选择它的主人。</p>
 
-    <div class="tools-grid">
-      <a v-for="tool in tools" :key="tool.link" class="tool-card" :href="withBase(tool.link)">
-        <span class="tool-icon"><component :is="tool.icon" :size="22" /></span>
-        <h2>{{ tool.name }}</h2>
-        <p>{{ tool.desc }}</p>
-      </a>
+    <div class="tools-board">
+      <div class="tools-board-inner">
+        <a
+          v-for="(tool, index) in tools"
+          :key="tool.link"
+          class="tool-post"
+          :class="`post-${(index % 4) + 1}`"
+          :href="withBase(tool.link)"
+        >
+          <span class="tool-post-pin" aria-hidden="true" />
+          <span class="tool-post-ribbon">悬赏令</span>
+          <span class="tool-post-stamp">奥利凡德</span>
+          <span class="tool-icon"><component :is="tool.icon" :size="22" /></span>
+          <h2>{{ tool.name }}</h2>
+          <p>{{ tool.desc }}</p>
+          <span class="tool-post-action">接下悬赏</span>
+        </a>
+      </div>
     </div>
   </section>
 </template>
-
