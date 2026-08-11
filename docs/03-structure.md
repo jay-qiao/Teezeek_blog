@@ -15,7 +15,7 @@ blog/
 │   │       ├── admin/       # GitHub API 客户端
 │   │       ├── styles/      # 全局样式
 │   │       └── components/  # 自定义组件
-│   ├── data/                # 设置、外观、分类标签 JSON
+│   ├── data/                # 设置、外观、分类标签、屠龙榜 JSON
 │   ├── public/              # 静态资源与生成文件
 │   ├── index.md             # 烬土大厅
 │   ├── leaderboard.md       # 屠龙勇士榜
@@ -38,7 +38,7 @@ blog/
 - `site/updates/`：公告列表数据源。
 - `site/data/`：后台写入的站点设置、外观配置和分类标签数据源。
 - `site/.vitepress/theme/admin/github.js`：GitHub API 客户端，负责 Token、读写文件、提交仓库。
-- `site/admin/`：管理员后台八个模块，入口只放在首页地图底部。
+- `site/admin/`：管理员后台模块，入口只放在首页地图底部。
 - `scripts/gen-site-assets.mjs`：构建前生成 `feed.xml`、`sitemap.xml`、`robots.txt`。
 
 ## 如何新增一篇文章

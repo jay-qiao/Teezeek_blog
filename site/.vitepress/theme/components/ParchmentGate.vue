@@ -7,6 +7,7 @@ import {
   Compass,
   Home,
   Mail,
+  Send,
   ScrollText,
   Trophy,
   User,
@@ -35,6 +36,7 @@ const departments = [
   { title: '公告栏', en: 'Bulletin Board', desc: '最新动态与热门文章，都张贴在这里。', link: '/updates/', icon: Bell, x: 18, y: 18 },
   { title: '文章站台', en: 'Post Platform', desc: '文章与笔记，支持分类和标签筛选。', link: '/posts/', icon: BookOpen, x: 38, y: 48 },
   { title: '工具屋', en: 'Tools House', desc: '趁手的工具、代码符石与资源收藏。', link: '/tools/', icon: Wand2, x: 65, y: 22 },
+  { title: '访客投稿', en: 'Guest Submit', desc: '写下你的文字，等待馆长批准后登上文章站台。', link: '/tools/submit', icon: Send, x: 52, y: 78 },
   { title: '屠龙勇士榜', en: 'Heroes Ranking', desc: '为这座图书馆贡献力量的勇士排行。', link: '/leaderboard', icon: Trophy, x: 75, y: 62 },
   { title: '议事厅', en: 'Meeting Hall', desc: '关于我、联系方式与社交链接。', link: '/about', icon: User, x: 28, y: 74 }
 ]

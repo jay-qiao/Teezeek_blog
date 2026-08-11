@@ -130,3 +130,28 @@ export async function listPosts() {
   const files = await listFiles('site/posts')
   return files.filter((file) => file.name.endsWith('.md') && file.name !== 'index.md')
 }
+
+export async function listIssuesByLabel(label) {
+  const items = await githubApi(
+    `/repos/${OWNER}/${REPO}/issues?state=all&labels=${encodeURIComponent(label)}&per_page=100`
+  )
+  return items.filter((issue) => !issue.pull_request)
+}
+
+export async function listIssueComments(issueNumber) {
+  return githubApi(`/repos/${OWNER}/${REPO}/issues/${issueNumber}/comments?per_page=100`)
+}
+
+export async function createIssueComment(issueNumber, body) {
+  return githubApi(`/repos/${OWNER}/${REPO}/issues/${issueNumber}/comments`, {
+    method: 'POST',
+    body: { body }
+  })
+}
+
+export async function updateIssue(issueNumber, body) {
+  return githubApi(`/repos/${OWNER}/${REPO}/issues/${issueNumber}`, {
+    method: 'PATCH',
+    body
+  })
+}

@@ -12,6 +12,7 @@ const iconMap = {
 
 const heroes = (leaderboardData.heroes || [])
   .slice()
+  .filter((hero) => hero.approved !== false)
   .sort((a, b) => Number(a.rank) - Number(b.rank))
   .map((hero) => ({ ...hero, icon: iconMap[hero.icon] || Trophy }))
 const maxPoints = Math.max(...heroes.map((hero) => hero.points))

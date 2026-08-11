@@ -1,5 +1,5 @@
 <script setup>
-import { BookMarked, Code2, Feather, FlaskConical, PenLine, Terminal } from 'lucide-vue-next'
+import { BookMarked, Code2, Feather, FlaskConical, PenLine, Send, Terminal } from 'lucide-vue-next'
 import { withBase } from 'vitepress'
 
 const tools = [
@@ -8,6 +8,12 @@ const tools = [
     desc: '在浏览器中写作与预览 Markdown，适合快速起草。',
     link: '/admin',
     icon: PenLine
+  },
+  {
+    name: '访客投稿',
+    desc: '把你的文章投进烬土图书馆，审核通过后发布并计分。',
+    link: '/tools/submit',
+    icon: Send
   },
   {
     name: '龙文排版器',
