@@ -43,15 +43,17 @@ const departments = [
 ]
 
 function openLetter() {
-  if (leaving.value) return
+  if (leaving.value || opened.value) return
   opened.value = true
   sealBreaking.value = true
   sessionStorage.setItem(STORAGE_KEY, '1')
+}
+
+function enterLibrary() {
+  if (leaving.value) return
   clearTimeout(loadTimer)
+  leaving.value = true
   loadTimer = window.setTimeout(() => {
-    leaving.value = true
-    clearTimeout(loadTimer)
-    loadTimer = window.setTimeout(() => {
     stage.value = 'loading'
     leaving.value = false
     sealBreaking.value = false
@@ -67,15 +69,7 @@ function openLetter() {
       cancelAnimationFrame(progressRaf)
       progress.value = 0
     }, LOADING_DURATION)
-    }, 420)
-  }, 1500)
-}
-
-function skipLetter() {
-  cancelAnimationFrame(progressRaf)
-  progress.value = 0
-  sessionStorage.setItem(STORAGE_KEY, '1')
-  stage.value = 'map'
+  }, 420)
 }
 
 function rereadLetter() {
@@ -160,8 +154,7 @@ onBeforeUnmount(() => {
             <strong>Teezeek</strong>
           </div>
           <div class="letter-actions">
-            <button class="btn btn-gold" type="button" @click="openLetter">进入大厅</button>
-            <button class="btn btn-ghost" type="button" @click="skipLetter">跳过，直达大厅</button>
+            <button class="btn btn-gold" type="button" @click="enterLibrary">进入大厅</button>
           </div>
         </div>
       </section>
