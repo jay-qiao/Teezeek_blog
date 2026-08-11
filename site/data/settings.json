@@ -27,5 +27,12 @@
     "admin": ["jay-qiao"],
     "labels": ["Teezeek 评论"],
     "distractionFreeMode": false
+  },
+  "utterances": {
+    "repo": "jay-qiao/Teezeek_blog",
+    "issueTerm": "pathname",
+    "label": "Teezeek 评论",
+    "theme": "github-dark",
+    "lang": "zh-CN"
   }
 }

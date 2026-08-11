@@ -4,19 +4,18 @@ import { Check, ExternalLink, Save } from 'lucide-vue-next'
 import { isConnected, readTextFile, writeTextFile } from '../admin/github.js'
 
 const form = ref({
-  clientID: '',
-  clientSecret: '',
-  repo: 'Teezeek_blog',
-  owner: 'jay-qiao',
-  admin: 'jay-qiao',
-  labels: 'Teezeek 评论'
+  repo: 'jay-qiao/Teezeek_blog',
+  issueTerm: 'pathname',
+  label: 'Teezeek 评论',
+  theme: 'github-dark',
+  lang: 'zh-CN'
 })
 const connected = ref(false)
 const busy = ref(false)
 const error = ref('')
 const saved = ref(false)
 
-const configured = computed(() => Boolean(form.value.clientID && form.value.clientSecret && form.value.repo && form.value.owner))
+const configured = computed(() => Boolean(form.value.repo))
 
 async function load() {
   if (!isConnected()) return
@@ -24,13 +23,7 @@ async function load() {
   try {
     const file = await readTextFile('site/data/settings.json')
     const settings = JSON.parse(file.content)
-    const gitalk = settings.gitalk || {}
-    form.value = {
-      ...form.value,
-      ...gitalk,
-      admin: Array.isArray(gitalk.admin) ? gitalk.admin.join(', ') : gitalk.admin || form.value.admin,
-      labels: Array.isArray(gitalk.labels) ? gitalk.labels.join(', ') : gitalk.labels || form.value.labels
-    }
+    form.value = { ...form.value, ...(settings.utterances || {}) }
   } catch (err) {
     error.value = err.message
   }
@@ -42,19 +35,17 @@ async function save() {
   try {
     const file = await readTextFile('site/data/settings.json')
     const settings = JSON.parse(file.content)
-    settings.gitalk = {
-      clientID: form.value.clientID.trim(),
-      clientSecret: form.value.clientSecret.trim(),
+    settings.utterances = {
       repo: form.value.repo.trim(),
-      owner: form.value.owner.trim(),
-      admin: form.value.admin.split(/[,，\s]+/).map((s) => s.trim()).filter(Boolean),
-      labels: form.value.labels.split(/[,，\s]+/).map((s) => s.trim()).filter(Boolean),
-      distractionFreeMode: false
+      issueTerm: form.value.issueTerm,
+      label: form.value.label.trim(),
+      theme: form.value.theme,
+      lang: form.value.lang
     }
     await writeTextFile(
       'site/data/settings.json',
       JSON.stringify(settings, null, 2) + '\n',
-      'chore: update gitalk config'
+      'chore: update utterances config'
     )
     saved.value = true
     window.setTimeout(() => {
@@ -75,7 +66,7 @@ onMounted(load)
     <div class="admin-page-head">
       <div>
         <h1 class="admin-page-title">评论配置</h1>
-        <p class="admin-page-lead">配置基于 GitHub Issues 的 Gitalk 评论系统，无服务器、免费。</p>
+        <p class="admin-page-lead">配置基于 GitHub Issues 的 Utterances 评论系统，无服务器、免费。</p>
       </div>
       <span v-if="saved" class="admin-save-tip"><Check :size="14" /> 已保存到仓库</span>
     </div>
@@ -88,23 +79,43 @@ onMounted(load)
     <section v-if="connected" class="admin-panel">
       <h2><Check :size="16" /> 当前状态</h2>
       <p class="admin-giscus-status" :class="configured ? 'is-ready' : 'is-empty'">
-        {{ configured ? 'Gitalk 已配置，文章页会显示评论区。' : '尚未配置完整，需要 clientID 与 clientSecret。' }}
+        {{ configured ? 'Utterances 已配置，文章页会显示评论区。' : '尚未配置完整，需要仓库名称。' }}
       </p>
-      <a class="social-link" href="https://github.com/settings/developers" target="_blank" rel="noopener">
-        <ExternalLink :size="15" /> 打开 GitHub OAuth Apps
+      <a class="social-link" href="https://github.com/apps/utterances" target="_blank" rel="noopener">
+        <ExternalLink :size="15" /> 安装 Utterances GitHub App
       </a>
     </section>
 
     <form v-if="connected" class="admin-form admin-settings" @submit.prevent="save">
       <section class="admin-panel">
-        <h2>Gitalk 参数</h2>
-        <label>clientID<input v-model="form.clientID" type="text" placeholder="GitHub OAuth App Client ID" /></label>
-        <label>clientSecret<input v-model="form.clientSecret" type="password" placeholder="GitHub OAuth App Client Secret" /></label>
-        <label>仓库名<input v-model="form.repo" type="text" /></label>
-        <label>所有者<input v-model="form.owner" type="text" /></label>
-        <label>管理员（逗号分隔）<input v-model="form.admin" type="text" /></label>
-        <label>标签（逗号分隔）<input v-model="form.labels" type="text" /></label>
-        <p class="admin-form-hint">clientSecret 会随静态站点公开可见，请使用权限有限的专用 OAuth App。</p>
+        <h2>Utterances 参数</h2>
+        <label>仓库<input v-model="form.repo" type="text" placeholder="owner/repo" /></label>
+        <label>
+          评论归属
+          <select v-model="form.issueTerm">
+            <option value="pathname">页面路径 pathname</option>
+            <option value="url">完整 URL</option>
+            <option value="title">页面标题</option>
+            <option value="og:title">OG 标题</option>
+          </select>
+        </label>
+        <label>标签<input v-model="form.label" type="text" placeholder="Teezeek 评论" /></label>
+        <label>
+          主题
+          <select v-model="form.theme">
+            <option value="github-dark">github-dark</option>
+            <option value="dark-blue">dark-blue</option>
+            <option value="photon-dark">photon-dark</option>
+            <option value="preferred-color-scheme">跟随系统</option>
+          </select>
+        </label>
+        <label>
+          语言
+          <select v-model="form.lang">
+            <option value="zh-CN">简体中文</option>
+            <option value="en">English</option>
+          </select>
+        </label>
       </section>
 
       <div class="admin-form-actions">
