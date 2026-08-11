@@ -1,4 +1,5 @@
 <script setup>
+import { withBase } from 'vitepress'
 import { data as updates } from '../../../updates.data.js'
 
 function formatDate(value) {
@@ -23,7 +24,7 @@ function formatDate(value) {
           <span v-for="tag in post.frontmatter.tags" :key="tag" class="post-tag">{{ tag }}</span>
         </div>
         <h2 class="post-card-title">
-          <a :href="post.url">{{ post.frontmatter.title }}</a>
+          <a :href="withBase(post.url)">{{ post.frontmatter.title }}</a>
         </h2>
         <p class="post-card-desc">{{ post.frontmatter.description }}</p>
       </article>

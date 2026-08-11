@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { ArrowRight } from 'lucide-vue-next'
+import { withBase } from 'vitepress'
 import { data as posts } from '../../../posts.data.js'
 
 const activeTag = ref('全部')
@@ -75,10 +76,10 @@ function formatDate(value) {
           <span v-for="tag in post.frontmatter.tags" :key="tag" class="post-tag">{{ tag }}</span>
         </div>
         <h2 class="post-card-title">
-          <a :href="post.url">{{ post.frontmatter.title }}</a>
+          <a :href="withBase(post.url)">{{ post.frontmatter.title }}</a>
         </h2>
         <p class="post-card-desc">{{ post.frontmatter.description }}</p>
-        <a class="post-more" :href="post.url">
+        <a class="post-more" :href="withBase(post.url)">
           继续阅读
           <ArrowRight :size="14" />
         </a>

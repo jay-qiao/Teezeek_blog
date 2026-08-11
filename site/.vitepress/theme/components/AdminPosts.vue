@@ -24,7 +24,7 @@ const editing = ref({
   date: '',
   category: '技术',
   tags: '',
-  status: '草稿',
+  status: '已发布',
   pinned: false,
   featured: false,
   content: ''
@@ -127,7 +127,7 @@ function openEdit(post = {}) {
     date: post.date || new Date().toISOString().slice(0, 10),
     category: post.category || '技术',
     tags: (post.tags || []).join(', '),
-    status: post.status || '草稿',
+    status: post.status || '已发布',
     pinned: Boolean(post.pinned),
     featured: Boolean(post.featured),
     content: post.content || ''
