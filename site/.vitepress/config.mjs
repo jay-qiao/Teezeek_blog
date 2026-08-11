@@ -17,7 +17,7 @@ export default defineConfig({
     ['meta', { property: 'og:type', content: 'website' }]
   ],
   themeConfig: {
-    logo: '/Teezeek_blog/logo.svg',
+    logo: '/logo.svg',
     siteTitle: 'Teezeek',
     nav: [
       { text: '大厅', link: '/' },
