@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Check } from 'lucide-vue-next'
+import { isConnected, readTextFile, writeTextFile } from '../admin/github.js'
 
 const form = ref({
   siteName: 'Teezeek 的卡塞尔图书馆',
@@ -13,14 +14,81 @@ const form = ref({
   smtpUser: 'noreply@example.com',
   smtpPassword: ''
 })
+const giscus = ref({
+  repo: 'jay-qiao/Teezeek_blog',
+  repoId: '',
+  category: 'Announcements',
+  categoryId: '',
+  mapping: 'pathname',
+  theme: 'dark',
+  lang: 'zh-CN'
+})
 const saved = ref(false)
+const connected = ref(false)
+const busy = ref(false)
+const error = ref('')
 
-function save() {
-  saved.value = true
-  window.setTimeout(() => {
-    saved.value = false
-  }, 1800)
+async function load() {
+  if (!isConnected()) return
+  connected.value = true
+  try {
+    const file = await readTextFile('site/data/settings.json')
+    const settings = JSON.parse(file.content)
+    form.value = {
+      siteName: settings.siteName || form.value.siteName,
+      siteDescription: settings.siteDescription || form.value.siteDescription,
+      registration: settings.registration ?? form.value.registration,
+      allowComments: settings.allowComments ?? form.value.allowComments,
+      commentModeration: settings.commentModeration ?? form.value.commentModeration,
+      smtpHost: settings.smtp?.host || form.value.smtpHost,
+      smtpPort: settings.smtp?.port || form.value.smtpPort,
+      smtpUser: settings.smtp?.user || form.value.smtpUser,
+      smtpPassword: settings.smtp?.password || form.value.smtpPassword
+    }
+    giscus.value = { ...giscus.value, ...(settings.giscus || {}) }
+  } catch (err) {
+    error.value = err.message
+  }
 }
+
+async function save() {
+  busy.value = true
+  error.value = ''
+  try {
+    await writeTextFile(
+      'site/data/settings.json',
+      JSON.stringify(
+        {
+          siteName: form.value.siteName,
+          siteDescription: form.value.siteDescription,
+          registration: form.value.registration,
+          allowComments: form.value.allowComments,
+          commentModeration: form.value.commentModeration,
+          smtp: {
+            host: form.value.smtpHost,
+            port: form.value.smtpPort,
+            user: form.value.smtpUser,
+            password: form.value.smtpPassword
+          },
+          giscus: giscus.value
+        },
+        null,
+        2
+      ) + '\n',
+      'chore: update site settings'
+    )
+    saved.value = true
+    window.setTimeout(() => {
+      saved.value = false
+    }, 1800)
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
+}
+
+onMounted(load)
 </script>
 
 <template>
@@ -28,9 +96,14 @@ function save() {
     <div class="admin-page-head">
       <div>
         <h1 class="admin-page-title">系统设置</h1>
-        <p class="admin-page-lead">站点信息、注册开关、评论设置与邮件 SMTP。</p>
+        <p class="admin-page-lead">站点信息、注册开关、评论设置与邮件 SMTP，保存后写入仓库。</p>
       </div>
-      <span v-if="saved" class="admin-save-tip"><Check :size="14" /> 已保存（本地演示）</span>
+      <span v-if="saved" class="admin-save-tip"><Check :size="14" /> 已保存到仓库</span>
+    </div>
+
+    <p v-if="error" class="admin-login-error">{{ error }}</p>
+    <div v-if="!connected" class="admin-login-empty">
+      请先连接 GitHub Token，再修改系统设置。
     </div>
 
     <form class="admin-form admin-settings" @submit.prevent="save">
@@ -56,9 +129,8 @@ function save() {
       </section>
 
       <div class="admin-form-actions">
-        <button class="btn btn-gold" type="submit">保存设置</button>
+        <button class="btn btn-gold" type="submit" :disabled="busy">{{ busy ? '保存中...' : '保存设置' }}</button>
       </div>
     </form>
   </AdminShell>
 </template>
-

@@ -13,19 +13,14 @@ import {
   Wand2
 } from 'lucide-vue-next'
 import { withBase } from 'vitepress'
+import defaultAppearance from '../../../data/appearance.json'
 
 const STORAGE_KEY = 'teezeek-gate-seen'
 const CONFIG_KEY = 'teezeek-letter-config'
 const LOADING_DURATION = 1500
 
-const DEFAULT_LETTER = {
-  title: '欢迎来到\nTeezeek 的卡塞尔图书馆',
-  body: '这封信将带你穿过迷雾，抵达属于代码、文字与龙火的站台。请握住火漆封印，展开大厅地图。'
-}
-const DEFAULT_MAP = {
-  title: 'Teezeek 的卡塞尔图书馆',
-  subtitle: '记录代码与生活的暗黑奇幻站台'
-}
+const DEFAULT_LETTER = defaultAppearance.letter
+const DEFAULT_MAP = defaultAppearance.map
 
 const stage = ref('loading')
 const opening = ref(false)

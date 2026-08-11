@@ -2039,7 +2039,118 @@ body {
   margin: 0;
 }
 
+.admin-login-area {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.admin-login-button {
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  background: transparent;
+  color: var(--r-gold-bright);
+  border-radius: 8px;
+  padding: 0.45em 0.9em;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.admin-login-button:hover {
+  border-color: var(--r-gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.admin-login-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--r-silver);
+  font-size: 0.85rem;
+}
+
+.admin-login-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.14);
+  color: var(--r-gold-bright);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.admin-login-empty {
+  border: 1px dashed rgba(201, 168, 76, 0.3);
+  border-radius: 8px;
+  padding: 2.2rem 1.5rem;
+  text-align: center;
+  color: var(--r-silver);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.admin-login-error {
+  color: #E58A82;
+  margin: 0 0 1rem;
+  line-height: 1.7;
+}
+
+.admin-login-note {
+  color: var(--r-silver);
+  line-height: 1.7;
+  margin: 0 0 0.5rem;
+}
+
+.admin-giscus-status {
+  margin: 0 0 1rem;
+  line-height: 1.7;
+}
+
+.admin-giscus-status.is-ready {
+  color: #9CC7A4;
+}
+
+.admin-giscus-status.is-empty {
+  color: #E2C56A;
+}
+
+.giscus-comments {
+  max-width: 920px;
+  margin: 2.5rem auto 0;
+  padding: 0 1rem;
+}
+
+.giscus-title {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  font-style: italic;
+  color: var(--r-gold);
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
+}
+
+.giscus-frame {
+  min-height: 320px;
+}
+
+.giscus-placeholder {
+  border: 1px dashed rgba(201, 168, 76, 0.3);
+  border-radius: 8px;
+  padding: 2rem;
+  color: var(--r-silver);
+  text-align: center;
+  line-height: 1.8;
+}
+
 @media (max-width: 900px) {
+  .admin-topbar-title {
+    display: none;
+  }
+
   .admin-sidebar {
     transform: translateX(-100%);
     transition: transform 0.25s ease;

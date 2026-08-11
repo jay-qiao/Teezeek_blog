@@ -12,8 +12,10 @@ blog/
 │   │   └── theme/
 │   │       ├── index.js     # 主题入口
 │   │       ├── Layout.vue   # 全局布局
+│   │       ├── admin/       # GitHub API 客户端
 │   │       ├── styles/      # 全局样式
 │   │       └── components/  # 自定义组件
+│   ├── data/                # 设置、外观、分类标签 JSON
 │   ├── public/              # 静态资源与生成文件
 │   ├── index.md             # 卡塞尔大厅
 │   ├── leaderboard.md       # 屠龙勇士榜
@@ -21,7 +23,7 @@ blog/
 │   ├── updates/             # 公告
 │   ├── tools/               # 工具页
 │   ├── about.md             # 关于
-│   ├── admin/               # 管理员后台演示
+│   ├── admin/               # 管理员后台
 │   └── 404.md               # 404 页面
 ├── package.json
 ├── package-lock.json
@@ -34,7 +36,9 @@ blog/
 - `site/.vitepress/theme/styles/index.css`：设计令牌与全站视觉规范所在地。
 - `site/posts/`：每篇文章一个 Markdown 文件，文章列表与 RSS 自动读取该目录。
 - `site/updates/`：公告列表数据源。
-- `site/admin/`：管理员后台八个演示模块，入口只放在首页地图底部。
+- `site/data/`：后台写入的站点设置、外观配置和分类标签数据源。
+- `site/.vitepress/theme/admin/github.js`：GitHub API 客户端，负责 Token、读写文件、提交仓库。
+- `site/admin/`：管理员后台八个模块，入口只放在首页地图底部。
 - `scripts/gen-site-assets.mjs`：构建前生成 `feed.xml`、`sitemap.xml`、`robots.txt`。
 
 ## 如何新增一篇文章

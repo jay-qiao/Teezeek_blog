@@ -1,29 +1,87 @@
 <script setup>
 import { ref } from 'vue'
-import { Database, Download, Plus, RotateCcw, Trash2 } from 'lucide-vue-next'
+import { Database, Download, Upload } from 'lucide-vue-next'
+import {
+  isConnected,
+  listPosts,
+  readTextFile,
+  writeTextFile
+} from '../admin/github.js'
 
-const backups = ref([
-  { id: 1, name: '自动备份', time: '2026-08-10 02:00', size: '2.4 MB', status: '正常' },
-  { id: 2, name: '开馆前备份', time: '2026-08-09 23:10', size: '1.8 MB', status: '正常' }
-])
+const connected = ref(false)
+const busy = ref(false)
+const error = ref('')
 const notice = ref('')
 
-function createBackup() {
-  backups.value.unshift({
-    id: Date.now(),
-    name: '手动备份',
-    time: new Date().toLocaleString('zh-CN'),
-    size: '2.4 MB',
-    status: '正常'
-  })
-  notice.value = '备份已创建（本地演示）'
-  window.setTimeout(() => {
-    notice.value = ''
-  }, 1800)
+async function ensureConnected() {
+  if (!isConnected()) {
+    error.value = '请先连接 GitHub Token'
+    return false
+  }
+  connected.value = true
+  return true
 }
 
-function removeBackup(id) {
-  backups.value = backups.value.filter((item) => item.id !== id)
+async function exportBackup() {
+  if (!(await ensureConnected())) return
+  busy.value = true
+  error.value = ''
+  try {
+    const files = await listPosts()
+    const posts = []
+    for (const file of files) {
+      const text = await readTextFile(file.path)
+      posts.push({ path: file.path, content: text.content })
+    }
+    const settings = await readTextFile('site/data/settings.json')
+    const appearance = await readTextFile('site/data/appearance.json')
+    const taxonomy = await readTextFile('site/data/taxonomy.json')
+    const backup = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      posts,
+      data: {
+        settings: settings.content,
+        appearance: appearance.content,
+        taxonomy: taxonomy.content
+      }
+    }
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `teezeek-backup-${new Date().toISOString().slice(0, 10)}.json`
+    link.click()
+    URL.revokeObjectURL(url)
+    notice.value = '备份已导出'
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
+}
+
+async function restoreBackup(event) {
+  const file = event.target.files?.[0]
+  event.target.value = ''
+  if (!file) return
+  if (!(await ensureConnected())) return
+  busy.value = true
+  error.value = ''
+  try {
+    const backup = JSON.parse(await file.text())
+    for (const post of backup.posts || []) {
+      await writeTextFile(post.path, post.content, `chore: restore ${post.path}`)
+    }
+    for (const [name, content] of Object.entries(backup.data || {})) {
+      await writeTextFile(`site/data/${name}.json`, content, `chore: restore ${name}.json`)
+    }
+    notice.value = '备份已恢复并提交到仓库'
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
 }
 </script>
 
@@ -32,46 +90,26 @@ function removeBackup(id) {
     <div class="admin-page-head">
       <div>
         <h1 class="admin-page-title">数据备份</h1>
-        <p class="admin-page-lead">创建、恢复与删除备份，均为本地演示。</p>
+        <p class="admin-page-lead">导出全部文章与配置，或从备份文件恢复并提交到仓库。</p>
       </div>
-      <button class="btn btn-gold" type="button" @click="createBackup">
-        <Plus :size="15" /> 创建备份
+      <button class="btn btn-gold" type="button" :disabled="busy" @click="exportBackup">
+        <Download :size="15" /> 导出完整备份
       </button>
     </div>
 
+    <p v-if="error" class="admin-login-error">{{ error }}</p>
     <p v-if="notice" class="admin-save-tip">{{ notice }}</p>
-
-    <div class="admin-table-wrap">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>名称</th>
-            <th>时间</th>
-            <th>大小</th>
-            <th>状态</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="backup in backups" :key="backup.id">
-            <td><strong>{{ backup.name }}</strong></td>
-            <td>{{ backup.time }}</td>
-            <td>{{ backup.size }}</td>
-            <td><span class="admin-status status-ok">{{ backup.status }}</span></td>
-            <td class="admin-actions">
-              <button type="button" title="恢复"><RotateCcw :size="15" /></button>
-              <button type="button" title="下载"><Download :size="15" /></button>
-              <button type="button" title="删除" @click="removeBackup(backup.id)"><Trash2 :size="15" /></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div v-if="!connected" class="admin-login-empty">
+      请先连接 GitHub Token，再使用数据备份。
     </div>
 
     <section class="admin-panel admin-backup-note">
-      <h2><Database :size="16" /> 说明</h2>
-      <p>GitHub Pages 是静态托管，真实数据持久化需要后续接入外部服务或 CMS。当前后台用于演示完整的后台工作流。</p>
+      <h2><Database :size="16" /> 恢复备份</h2>
+      <p>选择之前导出的 JSON 备份文件，系统会把文章和配置写回仓库并触发自动部署。</p>
+      <label class="btn btn-ghost">
+        <Upload :size="15" /> 选择备份文件
+        <input type="file" accept="application/json" style="display: none" @change="restoreBackup" />
+      </label>
     </section>
   </AdminShell>
 </template>
-

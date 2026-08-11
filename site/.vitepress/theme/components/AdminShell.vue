@@ -14,6 +14,7 @@ import {
   Users,
   X
 } from 'lucide-vue-next'
+import AdminLogin from './AdminLogin.vue'
 
 defineProps({
   active: { type: String, required: true }
@@ -25,8 +26,8 @@ const links = [
   { key: 'dashboard', label: '仪表盘', link: '/admin', icon: BarChart3 },
   { key: 'posts', label: '文章管理', link: '/admin/posts', icon: BookOpen },
   { key: 'taxonomy', label: '分类标签', link: '/admin/taxonomy', icon: Tags },
-  { key: 'comments', label: '评论审核', link: '/admin/comments', icon: MessageSquare },
-  { key: 'users', label: '用户管理', link: '/admin/users', icon: Users },
+  { key: 'comments', label: 'Giscus 评论', link: '/admin/comments', icon: MessageSquare },
+  { key: 'users', label: '协作者管理', link: '/admin/users', icon: Users },
   { key: 'settings', label: '系统设置', link: '/admin/settings', icon: Settings },
   { key: 'appearance', label: '外观设置', link: '/admin/appearance', icon: Palette },
   { key: 'backup', label: '数据备份', link: '/admin/backup', icon: Database }
@@ -40,7 +41,7 @@ const links = [
         <span class="admin-brand-seal">T</span>
         <div>
           <strong>卡塞尔后台</strong>
-          <small>静态演示模式</small>
+          <small>GitHub 工作台</small>
         </div>
         <button class="admin-sidebar-close" type="button" aria-label="关闭菜单" @click="open = false">
           <X :size="16" />
@@ -72,7 +73,8 @@ const links = [
         <button class="admin-menu-button" type="button" aria-label="打开菜单" @click.stop="open = true">
           <Menu :size="18" />
         </button>
-        <div class="admin-topbar-title">管理员工作台 · 静态演示</div>
+        <div class="admin-topbar-title">管理员工作台 · GitHub 工作台</div>
+        <AdminLogin />
       </header>
       <div class="admin-content">
         <slot />
@@ -80,4 +82,3 @@ const links = [
     </div>
   </div>
 </template>
-

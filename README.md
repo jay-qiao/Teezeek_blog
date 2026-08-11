@@ -13,7 +13,7 @@
 - 暗黑奇幻氛围：暗金雨丝、灰烬粒子、鼠标光晕、屠龙战场废墟背景
 - 文章系统：文章列表、分类筛选、标签筛选、本地全文搜索、Markdown 渲染、代码高亮、悬浮目录
 - 内容页面：文章站台、公告栏、工具资源页、屠龙勇士榜、关于页
-- 静态后台演示：仪表盘、文章管理、分类标签、评论审核、用户管理、系统设置、外观设置、数据备份
+- GitHub API 后台：仪表盘、文章管理、分类标签、Giscus 评论、协作者管理、系统设置、外观设置、数据备份
 - 响应式布局：桌面端和移动端都能正常浏览
 - RSS / sitemap / robots.txt 自动生成
 
@@ -52,7 +52,8 @@ site/                 VitePress 站点源码
 site/posts/           文章 Markdown
 site/updates/         公告
 site/tools/           工具资源页
-site/admin/           后台演示页面
+site/admin/           后台管理页面
+site/data/            设置、外观、分类标签数据
 docs/                 项目规范与设计文档
 rules/                AI 协作规则
 scripts/              构建与辅助脚本
@@ -70,4 +71,4 @@ scripts/              构建与辅助脚本
 
 仓库内置 GitHub Actions 工作流。推送 `main` 分支后会自动执行 `npm run docs:build`，并把构建产物发布到 GitHub Pages。
 
-> 后台目前是静态演示，数据不会写入数据库；后续可以接入 GitHub API 或轻量后端，让后台真正管理博客内容。
+> 后台通过 GitHub API 直接管理仓库内容，保存后会自动触发部署；评论使用 Giscus，协作者使用 GitHub 权限体系。

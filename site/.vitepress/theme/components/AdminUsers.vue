@@ -1,54 +1,157 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { Trash2, UserPlus } from 'lucide-vue-next'
+import { isConnected, repoApi } from '../admin/github.js'
 
-const users = ref([
-  { id: 1, name: 'Teezeek', email: 'teezeek@example.com', role: '管理员', banned: false },
-  { id: 2, name: '旅鸽', email: 'pigeon@example.com', role: '编辑', banned: false },
-  { id: 3, name: '灰烬', email: 'ash@example.com', role: '成员', banned: false },
-  { id: 4, name: '北境旅人', email: 'north@example.com', role: '成员', banned: true }
-])
+const users = ref([])
+const connected = ref(false)
+const busy = ref(false)
+const error = ref('')
+const notice = ref('')
+const newUsername = ref('')
+const newPermission = ref('push')
 
-function toggleBan(id) {
-  const user = users.value.find((item) => item.id === id)
-  if (user) user.banned = !user.banned
+const permissionLabels = {
+  pull: '读取',
+  triage: '分类',
+  push: '写入',
+  maintain: '维护',
+  admin: '管理员'
 }
+
+async function load() {
+  if (!isConnected()) return
+  connected.value = true
+  busy.value = true
+  error.value = ''
+  try {
+    const collaborators = await repoApi('/collaborators?per_page=100')
+    users.value = collaborators.map((user) => ({
+      ...user,
+      permission: permissionFor(user)
+    }))
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
+}
+
+async function addUser() {
+  const username = newUsername.value.trim()
+  if (!username) return
+  busy.value = true
+  error.value = ''
+  try {
+    await repoApi(`/collaborators/${encodeURIComponent(username)}`, {
+      method: 'PUT',
+      body: { permission: newPermission.value }
+    })
+    newUsername.value = ''
+    notice.value = `已邀请 ${username}`
+    await load()
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
+}
+
+async function changeRole(user) {
+  busy.value = true
+  error.value = ''
+  try {
+    await repoApi(`/collaborators/${encodeURIComponent(user.login)}`, {
+      method: 'PUT',
+      body: { permission: user.permission }
+    })
+    notice.value = `已更新 ${user.login} 的权限`
+  } catch (err) {
+    error.value = err.message
+    await load()
+  } finally {
+    busy.value = false
+  }
+}
+
+async function removeUser(user) {
+  if (!window.confirm(`确认移除协作者 ${user.login}？`)) return
+  busy.value = true
+  error.value = ''
+  try {
+    await repoApi(`/collaborators/${encodeURIComponent(user.login)}`, { method: 'DELETE' })
+    notice.value = `已移除 ${user.login}`
+    await load()
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
+}
+
+function permissionFor(user) {
+  if (user.role_name && user.role_name !== 'admin') return user.role_name
+  if (user.permissions?.admin) return 'admin'
+  if (user.permissions?.maintain) return 'maintain'
+  if (user.permissions?.push) return 'push'
+  if (user.permissions?.triage) return 'triage'
+  return 'pull'
+}
+
+onMounted(load)
 </script>
 
 <template>
   <AdminShell active="users">
-    <h1 class="admin-page-title">用户管理</h1>
-    <p class="admin-page-lead">角色权限与封禁均为本地演示数据。</p>
+    <div class="admin-page-head">
+      <div>
+        <h1 class="admin-page-title">协作者管理</h1>
+        <p class="admin-page-lead">通过 GitHub 协作者 API 管理仓库访问权限。</p>
+      </div>
+    </div>
 
-    <div class="admin-table-wrap">
+    <p v-if="error" class="admin-login-error">{{ error }}</p>
+    <p v-if="notice" class="admin-save-tip">{{ notice }}</p>
+    <div v-if="!connected" class="admin-login-empty">
+      请先连接 GitHub Token，再管理协作者。
+    </div>
+
+    <form v-if="connected" class="admin-inline-form" @submit.prevent="addUser">
+      <input v-model="newUsername" type="text" placeholder="GitHub 用户名" />
+      <select v-model="newPermission" class="admin-select">
+        <option value="pull">读取</option>
+        <option value="triage">分类</option>
+        <option value="push">写入</option>
+        <option value="maintain">维护</option>
+        <option value="admin">管理员</option>
+      </select>
+      <button class="btn btn-ghost" type="submit" :disabled="busy">
+        <UserPlus :size="14" /> 邀请协作者
+      </button>
+    </form>
+
+    <div v-if="connected" class="admin-table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
             <th>用户</th>
-            <th>邮箱</th>
             <th>角色</th>
-            <th>状态</th>
+            <th>权限</th>
             <th>操作</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in users" :key="user.id">
-            <td><strong>{{ user.name }}</strong></td>
-            <td>{{ user.email }}</td>
+          <tr v-for="user in users" :key="user.login">
+            <td><strong>{{ user.login }}</strong></td>
+            <td>{{ user.role_name || 'member' }}</td>
             <td>
-              <select v-model="user.role" class="admin-select">
-                <option>成员</option>
-                <option>编辑</option>
-                <option>管理员</option>
+              <select v-model="user.permission" class="admin-select" @change="changeRole(user)">
+                <option v-for="(label, value) in permissionLabels" :key="value" :value="value">{{ label }}</option>
               </select>
             </td>
-            <td>
-              <span class="admin-status" :class="user.banned ? 'status-red' : 'status-ok'">
-                {{ user.banned ? '已封禁' : '正常' }}
-              </span>
-            </td>
             <td class="admin-actions">
-              <button type="button" :class="{ 'is-danger': !user.banned }" @click="toggleBan(user.id)">
-                {{ user.banned ? '解封' : '封禁' }}
+              <button type="button" class="is-danger" title="移除" @click="removeUser(user)">
+                <Trash2 :size="15" /> 移除
               </button>
             </td>
           </tr>
@@ -57,4 +160,3 @@ function toggleBan(id) {
     </div>
   </AdminShell>
 </template>
-

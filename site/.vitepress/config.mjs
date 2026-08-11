@@ -1,9 +1,10 @@
 import { defineConfig } from 'vitepress'
+import settings from '../data/settings.json'
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: 'Teezeek 的卡塞尔图书馆',
-  description: '记录代码与生活的暗黑奇幻个人博客。',
+  title: settings.siteName,
+  description: settings.siteDescription,
   base: '/Teezeek_blog/',
   cleanUrls: true,
   appearance: 'force-dark',
@@ -11,8 +12,8 @@ export default defineConfig({
   head: [
     ['meta', { name: 'theme-color', content: '#0A0A0A' }],
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/Teezeek_blog/favicon.svg' }],
-    ['meta', { property: 'og:title', content: 'Teezeek 的卡塞尔图书馆' }],
-    ['meta', { property: 'og:description', content: '记录代码与生活的暗黑奇幻个人博客。' }],
+    ['meta', { property: 'og:title', content: settings.siteName }],
+    ['meta', { property: 'og:description', content: settings.siteDescription }],
     ['meta', { property: 'og:type', content: 'website' }]
   ],
   themeConfig: {

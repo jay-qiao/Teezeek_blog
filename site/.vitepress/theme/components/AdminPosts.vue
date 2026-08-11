@@ -1,62 +1,199 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Pencil, Pin, Plus, Star, Trash2 } from 'lucide-vue-next'
+import {
+  deleteFile,
+  isConnected,
+  listPosts,
+  readTextFile,
+  slugify,
+  splitFrontmatter,
+  writeTextFile
+} from '../admin/github.js'
 
-const posts = ref([
-  { id: 1, title: '欢迎来到卡塞尔图书馆', category: '指南', tags: ['博客', '指南'], status: '已发布', pinned: true, featured: true },
-  { id: 2, title: '用 VitePress 与 GitHub Pages 部署魔法站台', category: '技术', tags: ['VitePress', 'GitHub Pages'], status: '已发布', pinned: false, featured: true },
-  { id: 3, title: '龙文与前端字体的炼金日志', category: '前端', tags: ['字体', '前端'], status: '草稿', pinned: false, featured: false },
-  { id: 4, title: '《龙族》重读手记', category: '随笔', tags: ['读书', '随笔'], status: '已发布', pinned: false, featured: false }
-])
-
+const posts = ref([])
 const showModal = ref(false)
-const editing = ref({ id: null, title: '', category: '', tags: '', status: '草稿' })
+const busy = ref(false)
+const connected = ref(false)
+const error = ref('')
+const editing = ref({
+  path: '',
+  file: '',
+  title: '',
+  description: '',
+  date: '',
+  category: '技术',
+  tags: '',
+  status: '草稿',
+  pinned: false,
+  featured: false,
+  content: ''
+})
+
+function parseFrontmatter(raw) {
+  const { frontmatter } = splitFrontmatter(raw)
+  const data = {}
+  const lines = frontmatter.split(/\r?\n/)
+  let key = ''
+  for (const line of lines) {
+    const match = line.match(/^([\w-]+):\s*(.*)$/)
+    if (match) {
+      key = match[1]
+      data[key] = parseScalar(match[2])
+    } else if (key === 'tags' && line.trim().startsWith('- ')) {
+      data.tags ||= []
+      data.tags.push(line.trim().slice(2).replace(/^["']|["']$/g, ''))
+    }
+  }
+  return data
+}
+
+function parseScalar(value) {
+  const text = String(value || '').trim()
+  if (text === 'true') return true
+  if (text === 'false') return false
+  if (
+    (text.startsWith('"') && text.endsWith('"')) ||
+    (text.startsWith("'") && text.endsWith("'"))
+  ) {
+    return text.slice(1, -1)
+  }
+  if (text.startsWith('[') && text.endsWith(']')) {
+    return text
+      .slice(1, -1)
+      .split(',')
+      .map((item) => item.trim().replace(/^["']|["']$/g, ''))
+      .filter(Boolean)
+  }
+  return text
+}
+
+function buildFrontmatter(post) {
+  return [
+    '---',
+    `title: ${JSON.stringify(post.title)}`,
+    `description: ${JSON.stringify(post.description || '')}`,
+    `date: ${post.date || new Date().toISOString().slice(0, 10)}`,
+    `category: ${JSON.stringify(post.category)}`,
+    `tags: ${JSON.stringify(post.tags)}`,
+    `draft: ${post.status === '草稿'}`,
+    `pinned: ${Boolean(post.pinned)}`,
+    `featured: ${Boolean(post.featured)}`,
+    '---',
+    '',
+    post.content || ''
+  ].join('\n') + '\n'
+}
+
+async function load() {
+  if (!isConnected()) return
+  connected.value = true
+  busy.value = true
+  error.value = ''
+  try {
+    const files = await listPosts()
+    const items = []
+    for (const file of files) {
+      const text = await readTextFile(file.path)
+      const frontmatter = parseFrontmatter(text.content)
+      items.push({
+        path: file.path,
+        file: file.name,
+        title: frontmatter.title || file.name,
+        description: frontmatter.description || '',
+        date: frontmatter.date || '',
+        category: frontmatter.category || '未分类',
+        tags: frontmatter.tags || [],
+        status: frontmatter.draft ? '草稿' : '已发布',
+        pinned: Boolean(frontmatter.pinned),
+        featured: Boolean(frontmatter.featured),
+        content: splitFrontmatter(text.content).body.trimStart()
+      })
+    }
+    posts.value = items
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
+}
 
 function openEdit(post = {}) {
   editing.value = {
-    id: post.id || null,
+    path: post.path || '',
+    file: post.file || '',
     title: post.title || '',
+    description: post.description || '',
+    date: post.date || new Date().toISOString().slice(0, 10),
     category: post.category || '技术',
     tags: (post.tags || []).join(', '),
-    status: post.status || '草稿'
+    status: post.status || '草稿',
+    pinned: Boolean(post.pinned),
+    featured: Boolean(post.featured),
+    content: post.content || ''
   }
   showModal.value = true
 }
 
-function savePost() {
+async function savePost() {
   const tags = editing.value.tags
     .split(/[,，\s]+/)
     .filter(Boolean)
-  if (editing.value.id) {
-    const target = posts.value.find((post) => post.id === editing.value.id)
-    Object.assign(target, {
-      title: editing.value.title,
-      category: editing.value.category,
-      tags,
-      status: editing.value.status
-    })
-  } else {
-    posts.value.unshift({
-      id: Date.now(),
-      title: editing.value.title,
-      category: editing.value.category,
-      tags,
-      status: editing.value.status,
-      pinned: false,
-      featured: false
-    })
+  busy.value = true
+  error.value = ''
+  try {
+    const file = editing.value.file || `${slugify(editing.value.title)}.md`
+    const path = editing.value.path || `site/posts/${file}`
+    const message = editing.value.path
+      ? `feat: update ${file}`
+      : `feat: create ${file}`
+    await writeTextFile(
+      path,
+      buildFrontmatter({ ...editing.value, tags }),
+      message
+    )
+    showModal.value = false
+    await load()
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
   }
-  showModal.value = false
 }
 
-function removePost(id) {
-  posts.value = posts.value.filter((post) => post.id !== id)
+async function removePost(post) {
+  if (!window.confirm(`确认删除《${post.title}》？`)) return
+  busy.value = true
+  error.value = ''
+  try {
+    await deleteFile(post.path, `chore: delete ${post.file}`)
+    await load()
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
 }
 
-function toggleFlag(key, id) {
-  const post = posts.value.find((item) => item.id === id)
-  if (post) post[key] = !post[key]
+async function toggleFlag(key, post) {
+  busy.value = true
+  error.value = ''
+  try {
+    const message = key === 'pinned' ? `feat: pin ${post.file}` : `feat: feature ${post.file}`
+    await writeTextFile(
+      post.path,
+      buildFrontmatter({ ...post, [key]: !post[key], status: post.status === '草稿' ? '草稿' : '已发布' }),
+      message
+    )
+    await load()
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busy.value = false
+  }
 }
+
+onMounted(load)
 </script>
 
 <template>
@@ -64,14 +201,19 @@ function toggleFlag(key, id) {
     <div class="admin-page-head">
       <div>
         <h1 class="admin-page-title">文章管理</h1>
-        <p class="admin-page-lead">增删改查、置顶与加精均为本地演示。</p>
+        <p class="admin-page-lead">真实读写仓库中的 Markdown 文章。</p>
       </div>
       <button class="btn btn-gold" type="button" @click="openEdit()">
         <Plus :size="15" /> 新增文章
       </button>
     </div>
 
-    <div class="admin-table-wrap">
+    <p v-if="error" class="admin-login-error">{{ error }}</p>
+    <div v-if="!connected" class="admin-login-empty">
+      请先连接 GitHub Token，再加载仓库文章。
+    </div>
+
+    <div v-if="connected" class="admin-table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
@@ -83,7 +225,7 @@ function toggleFlag(key, id) {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="post in posts" :key="post.id">
+          <tr v-for="post in posts" :key="post.path">
             <td class="admin-title-cell">
               <strong>{{ post.title }}</strong>
               <span class="admin-flag" :class="{ 'is-on': post.pinned }">
@@ -99,10 +241,10 @@ function toggleFlag(key, id) {
             </td>
             <td><span class="admin-status" :class="`status-${post.status === '已发布' ? 'ok' : 'draft'}`">{{ post.status }}</span></td>
             <td class="admin-actions">
-              <button type="button" title="置顶" @click="toggleFlag('pinned', post.id)"><Pin :size="15" /></button>
-              <button type="button" title="加精" @click="toggleFlag('featured', post.id)"><Star :size="15" /></button>
+              <button type="button" title="置顶" @click="toggleFlag('pinned', post)"><Pin :size="15" /></button>
+              <button type="button" title="加精" @click="toggleFlag('featured', post)"><Star :size="15" /></button>
               <button type="button" title="编辑" @click="openEdit(post)"><Pencil :size="15" /></button>
-              <button type="button" title="删除" @click="removePost(post.id)"><Trash2 :size="15" /></button>
+              <button type="button" title="删除" @click="removePost(post)"><Trash2 :size="15" /></button>
             </td>
           </tr>
         </tbody>
@@ -114,6 +256,14 @@ function toggleFlag(key, id) {
         <label>
           标题
           <input v-model="editing.title" type="text" required />
+        </label>
+        <label>
+          描述
+          <input v-model="editing.description" type="text" />
+        </label>
+        <label>
+          日期
+          <input v-model="editing.date" type="date" required />
         </label>
         <label>
           分类
@@ -135,12 +285,23 @@ function toggleFlag(key, id) {
             <option>已发布</option>
           </select>
         </label>
+        <label class="admin-check">
+          <input v-model="editing.pinned" type="checkbox" />
+          置顶
+        </label>
+        <label class="admin-check">
+          <input v-model="editing.featured" type="checkbox" />
+          加精
+        </label>
+        <label>
+          正文 Markdown
+          <textarea v-model="editing.content" rows="12" />
+        </label>
         <div class="admin-form-actions">
-          <button class="btn btn-gold" type="submit">保存</button>
+          <button class="btn btn-gold" type="submit" :disabled="busy">{{ busy ? '保存中...' : '保存' }}</button>
           <button class="btn btn-ghost" type="button" @click="showModal = false">取消</button>
         </div>
       </form>
     </AdminModal>
   </AdminShell>
 </template>
-

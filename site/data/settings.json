@@ -1,0 +1,22 @@
+{
+  "siteName": "Teezeek 的卡塞尔图书馆",
+  "siteDescription": "记录代码与生活的暗黑奇幻个人博客。",
+  "registration": true,
+  "allowComments": true,
+  "commentModeration": true,
+  "smtp": {
+    "host": "smtp.example.com",
+    "port": "465",
+    "user": "noreply@example.com",
+    "password": ""
+  },
+  "giscus": {
+    "repo": "jay-qiao/Teezeek_blog",
+    "repoId": "",
+    "category": "Announcements",
+    "categoryId": "",
+    "mapping": "pathname",
+    "theme": "dark",
+    "lang": "zh-CN"
+  }
+}
