@@ -138,7 +138,7 @@ async function computeScores() {
   }
 }
 
-function applyCandidates() {
+async function applyCandidates() {
   for (const candidate of candidates.value) {
     const existing = heroes.value.find((hero) => hero.username === candidate.username)
     if (existing) {
@@ -159,6 +159,7 @@ function applyCandidates() {
     .slice()
     .sort((a, b) => Number(b.points) - Number(a.points))
     .map((hero, i) => ({ ...hero, rank: i + 1 }))
+  await save()
 }
 
 function openEdit(hero) {
