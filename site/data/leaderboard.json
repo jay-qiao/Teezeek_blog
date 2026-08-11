@@ -1,9 +1,64 @@
 {
   "heroes": [
-    { "rank": 1, "name": "Teezeek", "username": "jay-qiao", "title": "图书馆馆长", "points": 1280, "posts": 12, "badge": "龙之书页", "tier": "冠军", "icon": "crown", "approved": true },
-    { "rank": 2, "name": "旅鸽", "username": "", "title": "站台管理员", "points": 860, "posts": 8, "badge": "银羽信使", "tier": "亚军", "icon": "medal", "approved": true },
-    { "rank": 3, "name": "灰烬", "username": "", "title": "炼金学徒", "points": 540, "posts": 5, "badge": "火漆学徒", "tier": "季军", "icon": "star", "approved": true },
-    { "rank": 4, "name": "北境旅人", "username": "", "title": "藏书客", "points": 320, "posts": 3, "badge": "夜航者", "tier": "荣誉骑士", "icon": "flame", "approved": true },
-    { "rank": 5, "name": "未具名巫师", "username": "", "title": "匿名访客", "points": 120, "posts": 1, "badge": "迷雾旅人", "tier": "迷雾行者", "icon": "trophy", "approved": true }
+    {
+      "rank": 1,
+      "name": "Teezeek",
+      "username": "jay-qiao",
+      "title": "图书馆馆长",
+      "points": 1280,
+      "posts": 12,
+      "badge": "龙之书页",
+      "tier": "冠军",
+      "icon": "crown",
+      "approved": true
+    },
+    {
+      "rank": 2,
+      "name": "旅鸽",
+      "username": "",
+      "title": "站台管理员",
+      "points": 860,
+      "posts": 8,
+      "badge": "银羽信使",
+      "tier": "亚军",
+      "icon": "medal",
+      "approved": true
+    },
+    {
+      "rank": 3,
+      "name": "灰烬",
+      "username": "",
+      "title": "炼金学徒",
+      "points": 540,
+      "posts": 5,
+      "badge": "火漆学徒",
+      "tier": "季军",
+      "icon": "star",
+      "approved": true
+    },
+    {
+      "rank": 4,
+      "name": "北境旅人",
+      "username": "",
+      "title": "藏书客",
+      "points": 320,
+      "posts": 3,
+      "badge": "夜航者",
+      "tier": "荣誉骑士",
+      "icon": "flame",
+      "approved": true
+    },
+    {
+      "rank": 5,
+      "name": "where0509",
+      "username": "where0509",
+      "title": "凯撒",
+      "points": 0,
+      "posts": 0,
+      "badge": "爵士",
+      "tier": "仆人",
+      "icon": "trophy",
+      "approved": true
+    }
   ]
 }
