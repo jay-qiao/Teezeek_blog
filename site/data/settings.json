@@ -18,5 +18,14 @@
     "mapping": "pathname",
     "theme": "dark",
     "lang": "zh-CN"
+  },
+  "gitalk": {
+    "clientID": "Ov23li1z3OXxX1mZDY2Y",
+    "clientSecret": "4307c86da871ff12f6bd00b2ecc4374c5d0fe203",
+    "repo": "Teezeek_blog",
+    "owner": "jay-qiao",
+    "admin": ["jay-qiao"],
+    "labels": ["Teezeek 评论"],
+    "distractionFreeMode": false
   }
 }

@@ -2382,13 +2382,69 @@ body {
   margin: 0 0 1rem;
 }
 
-.giscus {
+.gitalk-comments {
   min-height: 320px;
 }
 
-.giscus iframe.giscus-frame {
-  width: 100%;
-  min-height: 320px;
+.gitalk-comments .gt-container {
+  color: var(--r-parchment);
+}
+
+.gitalk-comments .gt-container .gt-header-textarea,
+.gitalk-comments .gt-container .gt-comment-content,
+.gitalk-comments .gt-container .gt-comment-admin .gt-comment-content {
+  background: rgba(18, 12, 30, 0.72);
+  border-color: rgba(201, 168, 76, 0.18);
+  color: var(--r-parchment);
+}
+
+.gitalk-comments .gt-container .gt-header-textarea::placeholder {
+  color: rgba(230, 217, 184, 0.45);
+}
+
+.gitalk-comments .gt-container .gt-btn {
+  background: linear-gradient(180deg, #D8B85A, #A98A35);
+  border-color: #A98A35;
+  color: #160D02;
+}
+
+.gitalk-comments .gt-container .gt-btn:hover {
+  background: linear-gradient(180deg, #E2C56A, #B4923C);
+}
+
+.gitalk-comments .gt-container .gt-btn-preview {
+  background: transparent;
+  border-color: rgba(201, 168, 76, 0.35);
+  color: var(--r-parchment);
+}
+
+.gitalk-comments .gt-container .gt-comment-body {
+  color: var(--r-parchment);
+}
+
+.gitalk-comments .gt-container .gt-comment-username,
+.gitalk-comments .gt-container .gt-comment-admin .gt-comment-username {
+  color: var(--r-gold-bright);
+}
+
+.gitalk-comments .gt-container .gt-meta,
+.gitalk-comments .gt-container .gt-user {
+  color: var(--r-silver);
+}
+
+.gitalk-comments .gt-container .gt-popup {
+  background: rgba(18, 12, 30, 0.96);
+  border-color: rgba(201, 168, 76, 0.18);
+}
+
+.gitalk-comments .gt-container .gt-popup .gt-action,
+.gitalk-comments .gt-container .gt-popup .gt-action:hover {
+  color: var(--r-parchment);
+}
+
+.gitalk-comments .gt-container .gt-loading,
+.gitalk-comments .gt-container .gt-no-init {
+  color: var(--r-silver);
 }
 
 .giscus-note {
@@ -2396,6 +2452,13 @@ body {
   color: var(--r-silver);
   font-size: 0.95rem;
   text-align: center;
+}
+
+.admin-form-hint {
+  margin: 0.4rem 0 0;
+  color: var(--r-silver);
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 
 .giscus-placeholder {
