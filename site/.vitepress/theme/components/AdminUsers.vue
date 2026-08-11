@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { Trash2, UserPlus } from 'lucide-vue-next'
+import { ShieldAlert, Trash2, UserPlus } from 'lucide-vue-next'
 import { isConnected, repoApi } from '../admin/github.js'
 
 const users = ref([])
@@ -10,6 +10,7 @@ const error = ref('')
 const notice = ref('')
 const newUsername = ref('')
 const newPermission = ref('push')
+const owner = ref('jay-qiao')
 
 const permissionLabels = {
   pull: '读取',
@@ -39,16 +40,19 @@ async function load() {
 
 async function addUser() {
   const username = newUsername.value.trim()
-  if (!username) return
+  if (!username) {
+    error.value = '请输入 GitHub 用户名'
+    return
+  }
   busy.value = true
   error.value = ''
   try {
-    await repoApi(`/collaborators/${encodeURIComponent(username)}`, {
+    const added = await repoApi(`/collaborators/${encodeURIComponent(username)}`, {
       method: 'PUT',
       body: { permission: newPermission.value }
     })
     newUsername.value = ''
-    notice.value = `已邀请 ${username}`
+    notice.value = `已添加 ${username}（${permissionLabels[newPermission.value]}）`
     await load()
   } catch (err) {
     error.value = err.message
@@ -75,6 +79,10 @@ async function changeRole(user) {
 }
 
 async function removeUser(user) {
+  if (user.login === owner.value) {
+    error.value = '仓库所有者不能移除'
+    return
+  }
   if (!window.confirm(`确认移除协作者 ${user.login}？`)) return
   busy.value = true
   error.value = ''
@@ -129,6 +137,10 @@ onMounted(load)
         <UserPlus :size="14" /> 邀请协作者
       </button>
     </form>
+
+    <p v-if="connected" class="admin-users-note">
+      <ShieldAlert :size="14" /> 仓库所有者始终拥有最高权限，列表中不可移除。
+    </p>
 
     <div v-if="connected" class="admin-table-wrap">
       <table class="admin-table">

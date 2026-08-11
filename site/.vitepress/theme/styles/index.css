@@ -2316,6 +2316,15 @@ body {
   color: var(--r-parchment);
 }
 
+.admin-users-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 1rem;
+  color: var(--r-silver);
+  font-size: 0.85rem;
+}
+
 .admin-check {
   flex-direction: row !important;
   align-items: center;
