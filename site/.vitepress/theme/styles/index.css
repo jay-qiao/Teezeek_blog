@@ -2382,8 +2382,20 @@ body {
   margin: 0 0 1rem;
 }
 
-.giscus-frame {
+.giscus {
   min-height: 320px;
+}
+
+.giscus iframe.giscus-frame {
+  width: 100%;
+  min-height: 320px;
+}
+
+.giscus-note {
+  margin: 0 0 1rem;
+  color: var(--r-silver);
+  font-size: 0.95rem;
+  text-align: center;
 }
 
 .giscus-placeholder {
