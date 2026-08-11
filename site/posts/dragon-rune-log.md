@@ -1,11 +1,12 @@
 ---
-title: 龙文与前端字体的炼金日志
-description: 关于自托管字体、装饰性符文和性能取舍的记录。
+title: "龙文与前端字体的炼金日志"
+description: "关于自托管字体、装饰性符文和性能取舍的记录。"
 date: 2026-08-10
-category: 前端
-tags:
-  - 字体
-  - 前端
+category: "前端"
+tags: ["字体","前端"]
+draft: false
+pinned: false
+featured: false
 ---
 
 这座图书馆的标题使用 Cormorant Garamond Italic，正文使用 Noto Serif SC，代码使用 JetBrains Mono。
@@ -29,3 +30,4 @@ import '@fontsource/jetbrains-mono/400.css'
 - 中文字体按字重拆分，避免一次加载整包。
 - 灰烬粒子限制数量，并尊重 `prefers-reduced-motion`。
 - 首屏不加载大图，装饰用 CSS 与轻量 SVG 完成。
+
